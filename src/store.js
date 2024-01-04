@@ -1,21 +1,45 @@
 //create a reducer
 const reducer = (state, action) => {
     if (action.type === "AddMessage") {
-        return {
-            messages: [...state.messages, action.message]
-        };
+        let newMessage = action.message;
+
+        if(action.message.from === "Abhi") {
+            return {
+                messagesAbhi: [...state.messagesAbhi, newMessage],
+                messagesSimran: state.messagesSimran
+            };
+        } else if(action.message.from === "Simran") {
+            return {
+                messagesAbhi: state.messagesAbhi,
+                messagesSimran: [...state.messagesSimran, newMessage]
+            };
+        }
     } else if (action.type === "DeleteMessage") {
-        return [
-            ...state.messages.slice(0, action.id),
-            ...state.messages.slice(action.id + 1, state.messages.length)
-        ];
-    } else {
-        return state;
+        if(action.from === "Abhi") {
+            return {
+                messagesAbhi: [
+                    ...state.messagesAbhi.slice(0, action.id),
+                    ...state.messagesAbhi.slice(action.id + 1, state.messagesAbhi.length)
+                ],
+                messagesSimran: state.messagesSimran
+            };
+        } else if(action.from === "Simran") {
+            return {
+                messagesAbhi: state.messagesAbhi,
+                messagesSimran: [
+                    ...state.messagesSimran.slice(0, action.id),
+                    ...state.messagesSimran.slice(action.id + 1, state.messagesSimran.length)
+                ]
+            };
+        }
     }
+
+    return state;
 };
 
 const initialState = {
-    messages: []
+    messagesAbhi: [],
+    messagesSimran: []
 };
 
 

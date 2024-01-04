@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import store from "./store";
 
-const MessageInput = () => {
+const MessageInput = (props) => {
   const { dispatch } = store;
   const [inputText, setInputText] = useState("");
 
@@ -9,10 +9,20 @@ const MessageInput = () => {
     setInputText(evt.target.value);
   };
 
+  const onPressEnter = (evt) => {
+    if (evt.keyCode === 13) {
+      onClickHandlerAddMessage();
+    }
+  };
+
   const onClickHandlerAddMessage = () => {
     dispatch({
       type: "AddMessage",
-      message: inputText
+      message: {
+        text: inputText,
+        timeStamp: new Date().getTime(),
+        from: props.from
+      }
     });
 
     setInputText("");
@@ -20,7 +30,8 @@ const MessageInput = () => {
 
   return (
     <div>
-      <input value={inputText} onChange={updateInputValue} />
+      <span>{props.from}:</span>
+      <input value={inputText} onChange={updateInputValue} onKeyDown={onPressEnter}/>
       <button icon="add" onClick={onClickHandlerAddMessage}>
         Add Message
       </button>

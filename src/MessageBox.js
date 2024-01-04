@@ -1,18 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import Messages from "./Messages";
 import MessageInput from "./MessageInput";
-import store from "./store";
 
-const MessageBox = () => {
-    const { getState, subscribe } = store;
-    const [state, setState] = useState(getState());
-
-    subscribe(() => setState(getState()));
+const MessageBox = (props) => {
 
     return (
-        <div>
-            <Messages messages={state.messages} />
-            <MessageInput />
+        <div className={"messageBox " + props.className}>
+            <Messages from={props.from} to={props.to}/>
+            <MessageInput from={props.from}/>
         </div>
     );
 };
