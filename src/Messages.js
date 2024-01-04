@@ -23,6 +23,12 @@ const Messages = (props) => {
                 }}>
             {
                 messages.map((message, index) => {
+                    let simranIndex = -1, abhiIndex = -1;
+                    if(message.from === "Simran") {
+                        simranIndex++;
+                    } else if(message.from === "Abhi") {
+                        abhiIndex++;
+                    }
                     return (
                         <li
                             style={{
@@ -31,11 +37,14 @@ const Messages = (props) => {
                                 margin: "8px 0"
                             }}
                             key={index}
-                            onClick={() => dispatch({
-                                type: "DeleteMessage",
-                                id: index,
-                                from: props.from
-                            })}>
+                            onClick={() => {
+                                message.from === props.from &&
+                                    dispatch({
+                                    type: "DeleteMessage",
+                                    id: message.from === "Simran" ? simranIndex : abhiIndex,
+                                    from: props.from
+                                    });
+                            }}>
                             {message.text} - {new Date(message.timeStamp).toLocaleTimeString()}
                         </li>
                     );
