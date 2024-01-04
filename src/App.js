@@ -1,11 +1,14 @@
 import './App.css';
-import MessageBox from './MessageBox';
+import MessageThread from './MessageThread';
 
 function App() {
   return (
-    <div className="messageApp">
-      <MessageBox from="Simran" to="Abhi"/>
-      <MessageBox from="Abhi" to="Simran" className="margin_top_200 abhi"/>
+    <div className="messageApp player">
+      <MessageThread from="Simran"/>
+      <div className="divider audience">
+        <MessageThread from="Abhi"className="margin_bottom_200"/>
+        <MessageThread from="Meetu"/>
+      </div>
     </div>
   );
 }

@@ -21,7 +21,8 @@ const MessageInput = (props) => {
       message: {
         text: inputText,
         timeStamp: new Date().getTime(),
-        from: props.from
+        from: props.from,
+        to: props.to
       }
     });
 

@@ -1,45 +1,138 @@
 //create a reducer
+import _ from "lodash";
 const reducer = (state, action) => {
     if (action.type === "AddMessage") {
         let newMessage = action.message;
-
-        if(action.message.from === "Abhi") {
-            return {
-                messagesAbhi: [...state.messagesAbhi, newMessage],
-                messagesSimran: state.messagesSimran
-            };
-        } else if(action.message.from === "Simran") {
-            return {
-                messagesAbhi: state.messagesAbhi,
-                messagesSimran: [...state.messagesSimran, newMessage]
-            };
-        }
+        return {
+            users: {
+                ...state.users,
+                [newMessage.from]: {
+                    ...state.users[newMessage.from],
+                    threads: {
+                        ...state.users[newMessage.from].threads,
+                        [newMessage.to]: {
+                            ...state.users[newMessage.from].threads[newMessage.to],
+                            messages: [
+                                ...state.users[newMessage.from].threads[newMessage.to].messages,
+                                newMessage
+                            ]
+                        }
+                    }
+                }
+            }
+        };
     } else if (action.type === "DeleteMessage") {
-        if(action.from === "Abhi") {
-            return {
-                messagesAbhi: [
-                    ...state.messagesAbhi.slice(0, action.id),
-                    ...state.messagesAbhi.slice(action.id + 1, state.messagesAbhi.length)
-                ],
-                messagesSimran: state.messagesSimran
-            };
-        } else if(action.from === "Simran") {
-            return {
-                messagesAbhi: state.messagesAbhi,
-                messagesSimran: [
-                    ...state.messagesSimran.slice(0, action.id),
-                    ...state.messagesSimran.slice(action.id + 1, state.messagesSimran.length)
-                ]
-            };
-        }
+        let from = action.from, to = action.to;
+        let messages = state.users[from].threads[to].messages;
+        let newMessages = _.remove(messages, (_, index) => {
+            return index !== action.id;
+        });
+        return {
+            users: {
+                ...state.users,
+                [from]: {
+                    ...state.users[from],
+                    threads: {
+                        ...state.users[from].threads,
+                        [to]: {
+                            ...state.users[from].threads[to],
+                            messages: newMessages
+                        }
+                    }
+                }
+            }
+        };
+    } else if (action.type === "SetActiveThread") {
+        return {
+            ...state,
+            users: {
+                ...state.users,
+                [action.from]: {
+                    ...state.users[action.from],
+                    activeThread: action.activeThread
+                }
+            }
+        };
     }
 
     return state;
 };
 
 const initialState = {
-    messagesAbhi: [],
-    messagesSimran: []
+    users: {
+        Abhi: {
+            name: "Abhi",
+            activeThread: "Simran", // "Simran" or "Meetu
+            threads: {
+                Simran: {
+                    messages: [
+                        {
+                            text: "Hi Simran Bhaiya",
+                            timeStamp: new Date().getTime(),
+                            from: "Abhi"
+                        }
+                    ]
+                },
+                Meetu: {
+                    messages: [
+                        {
+                            text: "Hi Meetu Bhabhi",
+                            timeStamp: new Date().getTime(),
+                            from: "Abhi"
+                        }
+                    ]
+                }
+            }
+        },
+        Simran: {
+            name: "Simran",
+            activeThread: "Abhi", // "Abhi" or "Meetu
+            threads: {
+                Abhi: {
+                    messages: [
+                        {
+                            text: "Hi Abhi, my Tiger",
+                            timeStamp: new Date().getTime(),
+                            from: "Simran"
+                        }
+                    ]
+                },
+                Meetu: {
+                    messages: [
+                        {
+                            text: "Hi Meetu, my Puchuu",
+                            timeStamp: new Date().getTime(),
+                            from: "Simran"
+                        }
+                    ]
+                }
+            }
+        },
+        Meetu: {
+            name: "Meetu",
+            activeThread: "Simran", // "Simran" or "Abhi
+            threads: {
+                Abhi: {
+                    messages: [
+                        {
+                            text: "Hi Devar ji",
+                            timeStamp: new Date().getTime(),
+                            from: "Meetu"
+                        }
+                    ]
+                },
+                Simran: {
+                    messages: [
+                        {
+                            text: "Hi my Love",
+                            timeStamp: new Date().getTime(),
+                            from: "Meetu"
+                        }
+                    ]
+                }
+            }
+        }
+    }
 };
 
 

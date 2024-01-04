@@ -6,8 +6,8 @@ const MessageBox = (props) => {
 
     return (
         <div className={"messageBox " + props.className}>
-            <Messages from={props.from} to={props.to}/>
-            <MessageInput from={props.from}/>
+            <Messages from={props.from} to={props.to} messages={props.messages}/>
+            <MessageInput from={props.from} to={props.to}/>
         </div>
     );
 };

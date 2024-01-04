@@ -1,17 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import store from "./store";
 
 const Messages = (props) => {
-    const [messages, setMessages] = useState([...store.getState().messagesAbhi, ...store.getState().messagesSimran]),
-        { dispatch, subscribe } = store;
-
-    subscribe(() => {
-        setMessages([...store.getState().messagesAbhi, ...store.getState().messagesSimran]);
-    });
-
+    const { dispatch } = store;
+    const messages = props.messages;
     messages.sort((a, b) => {
         return new Date(a.timeStamp) - new Date(b.timeStamp);
     });
+    let id = -1;
+
     return (
         <ul className="messages"
             style={{
@@ -20,15 +17,15 @@ const Messages = (props) => {
                 flexDirection: "column",
                 backgroundColor: "#e8e8e8",
                 padding: "8px",
+                marginTop: "0",
                 }}>
-            {
+            {    
                 messages.map((message, index) => {
-                    let simranIndex = -1, abhiIndex = -1;
-                    if(message.from === "Simran") {
-                        simranIndex++;
-                    } else if(message.from === "Abhi") {
-                        abhiIndex++;
+
+                    if(message.from === props.from) {
+                        id++;
                     }
+
                     return (
                         <li
                             style={{
@@ -37,12 +34,14 @@ const Messages = (props) => {
                                 margin: "8px 0"
                             }}
                             key={index}
-                            onClick={() => {
+                            num={id}
+                            onClick={(e) => {
                                 message.from === props.from &&
                                     dispatch({
                                     type: "DeleteMessage",
-                                    id: message.from === "Simran" ? simranIndex : abhiIndex,
-                                    from: props.from
+                                    id: parseInt(e.target.getAttribute("num")),
+                                    from: props.from,
+                                    to: props.to
                                     });
                             }}>
                             {message.text} - {new Date(message.timeStamp).toLocaleTimeString()}
