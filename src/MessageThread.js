@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import MessageBox from "./MessageBox";
 import store from "./store";
+import UserContext from "./UserContext";
 
 const MessageThread = (props) => {
+    const from = React.useContext(UserContext);
     const { dispatch, getState, subscribe } = store;
     const [userDetails, setUserDetails] = useState({
-        threads: getState().users[props.from].threads,
-        activeThread: getState().users[props.from].activeThread,
+        threads: getState().users[from].threads,
+        activeThread: getState().users[from].activeThread,
     });
-    const messages = [...getState().users[props.from].threads[userDetails.activeThread].messages, ...getState().users[userDetails.activeThread].threads[props.from].messages];
+    const messages = [...getState().users[from].threads[userDetails.activeThread].messages, ...getState().users[userDetails.activeThread].threads[from].messages];
     subscribe(() => {
         setUserDetails({
-            threads: getState().users[props.from].threads,
-            activeThread: getState().users[props.from].activeThread,
+            threads: getState().users[from].threads,
+            activeThread: getState().users[from].activeThread,
         });
     });
     return (
@@ -27,7 +29,7 @@ const MessageThread = (props) => {
                         dispatch({
                             type: "SetActiveThread",
                             activeThread: thread,
-                            from: props.from
+                            from: from
                         });
                     }}
                     key={index}
@@ -36,7 +38,7 @@ const MessageThread = (props) => {
                 </button>
             );
         })}
-        <MessageBox from={props.from} to={userDetails.activeThread} messages={messages}/>
+        <MessageBox from={from} to={userDetails.activeThread} messages={messages}/>
         </div>
     );
 };
